@@ -1,103 +1,71 @@
 import { useEffect, useState } from "react";
 // import GamesFilter from "./GamesFilter";
 import GamesList from "./GamesList";
+import GameService from "../services/games-service";
+import GamesFilter from "./GamesFilter";
+import AddNewGame from "./AddNewGame";
+
+const gamesService = new GameService();
 
 export default function GamesContainer() {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("Sort by: Default");
-  const [genre, setGenre] = useState("");
   const [view, setView] = useState("cards");
+  const [newGameDialog, setNewGameDialog] = useState(false);
 
+  // Fetch data and assign initial games array
   useEffect(() => {
-    fetch(
-      "https://raw.githubusercontent.com/dasingh9/public/refs/heads/main/games-data.json"
-    )
-      .then((response) => response.json())
-      .then((games) => {
-        setGames(games);
-        setFilteredGames(games);
+    gamesService
+      .getGames()
+      .then((gamesArray) => {
+        setGames(gamesArray);
+        setFilteredGames(gamesArray);
       })
       .catch((err) => console.log(err));
   }, []);
 
-  const handleSort = (e) => {
-    setSort(e.target.value);
+  // Callback function that will take in a modified games array and setFilteredGames
+  const handleFilter = (modifiedArray) => {
+    setFilteredGames(modifiedArray);
   };
 
-  const handleGenre = (e) => {
-    setGenre(e.target.value);
+  // Callback function that will take in new game object and add to database
+  const onAdd = (newGame) => {
+    setGames([...games, newGame]);
+    setFilteredGames([...filteredGames, newGame]);
+    onClose();
   };
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
+  // Callback function that will close the modal box
+  const onClose = () => {
+    setNewGameDialog(false);
   };
 
-  const matchesGenre = (game, genre) => {
-    return genre === "" || genre === game?.genre;
+  const openModal = () => {
+    setNewGameDialog(true);
   };
-
-  const matchesSearch = (game, search) => {
-    return (
-      search === "" || game.title.toLowerCase().includes(search.toLowerCase())
-    );
-  };
-
-  const AZSort = (cars) => {
-    return [...cars].sort((a, b) => a.title.localeCompare(b.title));
-  };
-
-  const ZASort = (cars) => {
-    return [...cars].sort((a, b) => b.title.localeCompare(a.title));
-  };
-
-  useEffect(() => {
-    let filtered = games.filter((game) => {
-      return matchesGenre(game, genre) && matchesSearch(game, search);
-    });
-
-    if (sort === "A-Z") {
-      filtered = AZSort(filtered);
-    } else if (sort === "Z-A") {
-      filtered = ZASort(filtered);
-    }
-    setFilteredGames(filtered);
-  }, [genre, search, sort]);
 
   return (
     <>
       {/* Games Filter Bar */}
-      <div className="filter-bar">
-        <input type="text" value={search} onChange={handleSearch} />
-        <select value={genre} onChange={handleGenre}>
-          <option value="">All Genres</option>
-          <option value="ARPG">ARPG</option>
-          <option value="MMORPG">MMORPG</option>
-          <option value="Shooter">Shooter</option>
-          <option value="Strategy">Strategy</option>
-        </select>
-        <select value={sort} onChange={handleSort}>
-          <option value="Sort by: Default">Sort by: Default</option>
-          <option value="A-Z">A-Z</option>
-          <option value="Z-A">Z-A</option>
-        </select>
+      <GamesFilter games={games} handleFilter={handleFilter} />
+      <div className="d-flex p-2 justify-content-between">
+        {/* Add new game button */}
         <div>
-          <button
-            onClick={() => setView("cards")}
-            className="btn-outline-success"
-          >
-            ⏹️
+          <button className="playButton" onClick={openModal}>
+            Create a New Game
           </button>
-          <button
-            onClick={() => setView("table")}
-            className="btn-outline-success"
-          >
-            🥅
+        </div>
+        <div className="d-flex justify-content-center">
+          <button onClick={() => setView("cards")} className="playButton">
+            ⏹️ Card View
+          </button>
+          <button onClick={() => setView("table")} className="playButton">
+            🥅 Table View
           </button>
         </div>
       </div>
-
+      {newGameDialog && <AddNewGame onClose={onClose} onAdd={onAdd} />}
       <GamesList games={filteredGames} view={view} />
     </>
   );

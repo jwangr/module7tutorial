@@ -6,7 +6,7 @@ export default function SingleGame({ game, view }) {
   if (view === "cards") {
     return (
       <div className="card">
-        <img className="img-container m-0" style={imgStyle}></img>
+        <div className="img-container m-0" style={imgStyle}></div>
         <div>
           <h2>{game.title}</h2>
         </div>
