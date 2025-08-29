@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 export default function BitcoinComponent() {
   const currencies = ["USD", "AUD", "NZD", "GBP", "EUR", "SGD"];
   const [currency, setCurrency] = useState(currencies[0]);
   // fetch URL: https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}
-  const [cost, setCost] = useState(null);
+
+  const [value, dispatch] = useReducer(valueReducer, {
+    loading: true,
+    value: null,
+    error: null,
+  });
 
   //   fetches data on initial render and when currency changes
   useEffect(() => {
@@ -19,8 +24,11 @@ export default function BitcoinComponent() {
         if (!ignore) {
           let value = data.bitcoin;
           value = value[`${currency.toLowerCase()}`];
-          console.log(value);
-          setCost(value);
+
+          dispatch({
+            type: "success",
+            payload: value,
+          });
         }
 
         // cleanup function
@@ -29,7 +37,12 @@ export default function BitcoinComponent() {
           console.log("cleanup applied");
         };
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        dispatch({
+          type: "error",
+          payload: err,
+        });
+      });
   }, [currency]);
 
   const options = currencies.map((curr) => (
@@ -40,7 +53,7 @@ export default function BitcoinComponent() {
 
   return (
     <div className="BitcoinRates componentBox">
-      <h3>Bitcoin Exchange Rate: ${cost}</h3>
+      <h3>Bitcoin Exchange Rate: ${value.value}</h3>
       <label>
         Choose currency:
         <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
@@ -49,4 +62,18 @@ export default function BitcoinComponent() {
       </label>
     </div>
   );
+}
+
+// loading, error, value
+function valueReducer(valueState, action) {
+  switch (action.type) {
+    case "success":
+      return { loading: false, value: action.payload, error: "" };
+
+    case "error":
+      return { loading: false, value: null, error: action.payload };
+
+    default:
+      return { ...valueState, loading: false };
+  }
 }
