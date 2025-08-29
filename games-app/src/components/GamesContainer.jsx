@@ -49,6 +49,7 @@ export default function GamesContainer() {
     <>
       {/* Games Filter Bar */}
       <GamesFilter games={games} handleFilter={handleFilter} />
+
       <div className="d-flex p-2 justify-content-between">
         {/* Add new game button */}
         <div>
@@ -56,6 +57,7 @@ export default function GamesContainer() {
             Create a New Game
           </button>
         </div>
+        {/* Change games list view */}
         <div className="d-flex justify-content-center">
           <button onClick={() => setView("cards")} className="playButton">
             ⏹️ Card View
@@ -65,6 +67,7 @@ export default function GamesContainer() {
           </button>
         </div>
       </div>
+      
       {newGameDialog && <AddNewGame onClose={onClose} onAdd={onAdd} />}
       <GamesList games={filteredGames} view={view} />
     </>

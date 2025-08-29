@@ -1,0 +1,99 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+header {
+  margin: 0px 0px 10px 0px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(
+    90deg,
+    rgb(116, 0, 116) 0%,
+    rgb(255, 183, 220) 100%
+  );
+  color: white;
+  padding: 20px;
+}
+
+header > h1 {
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+}
+
+#maincontents {
+  padding: 20px;
+}
+
+.grid4Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  row-gap: 25px;
+  column-gap: 25px;
+}
+
+.grid4Col > div.card {
+  background-color: rgb(255, 231, 235);
+  padding: 0px;
+  box-shadow: 1px 2px 5px rgba(128, 0, 128, 0.592);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grid4Col > div.card:hover {
+  transform: scale(102%, 102%);
+}
+
+div.card > div {
+  width: 100%;
+  /* outline: 1px solid #368980; */
+  /* margin: 5px; */
+  padding: 5px;
+}
+
+div.card h2 {
+  height: 80px;
+  overflow-y: hidden;
+}
+
+.grid4Col .img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+}
+
+.grid4Col div.genre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.playButton {
+  padding: 10px 20px;
+  background: linear-gradient(
+    90deg,
+    rgb(184, 0, 184) 0%,
+    rgb(255, 131, 195) 100%
+  );
+  color: white;
+  border: rgba(128, 0, 128, 0.592);
+  border-radius: 5px;
+  margin: 5px;
+  text-decoration: none;
+}
+
+.filter-bar {
+  display: grid;
+  width: 80%;
+  grid-template-columns: 3fr 1fr 1fr 0.5fr;
+  margin: auto;
+  gap: 5px;
+}
