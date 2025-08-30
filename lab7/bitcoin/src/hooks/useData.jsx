@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
+import { valueReducer } from "./valueReducer";
 
 //   custom hook to process fetch data for any url
 export function useData(url, dependency) {
-  const [loading, setLoading] = useState(true);
-  const [rawValue, setValue] = useState(null);
-  const [error, setError] = useState(null);
+  const [value, dispatch] = useReducer(valueReducer, {
+    loading: true,
+    rawValue: null,
+    error: null,
+  });
 
   //   fetches data on initial render and when currency changes
   useEffect(() => {
@@ -15,8 +18,10 @@ export function useData(url, dependency) {
       .then((response) => response.json())
       .then((data) => {
         if (!ignore) {
-          setValue(data);
-          console.log(data);
+          dispatch({
+            type: "success",
+            payload: data,
+          });
         }
 
         // cleanup function
@@ -27,12 +32,12 @@ export function useData(url, dependency) {
       })
       .catch((err) => {
         console.log(err);
-        setError(err);
+        dispatch({
+          type: "error",
+          payload: data,
+        });
       })
-      .finally(
-        setLoading(false)
-      );
   }, [dependency]);
 
-  return {rawValue, loading, error};
+  return value;
 }

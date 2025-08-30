@@ -6,7 +6,8 @@ export default function BitcoinComponent() {
   const [currency, setCurrency] = useState(currencies[0]);
 
   //   custom hook to process fetch data
-  const { rawValue, loading, error } = useData(
+  //   deconstruct return value into
+  const state = useData(
     `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`,
     currency
   );
@@ -30,10 +31,10 @@ export default function BitcoinComponent() {
     <div className="BitcoinRates componentBox">
       <h3>
         Bitcoin Exchange Rate:{" "}
-        {loading ? (
+        {state.loading ? (
           <span>Loading...</span>
         ) : (
-          <span>${extractValue(rawValue)}</span>
+          <span>${extractValue(state.value)}</span>
         )}{" "}
       </h3>
       <label>
@@ -42,31 +43,7 @@ export default function BitcoinComponent() {
           {options}
         </select>
       </label>
-      {error && <div>{error}</div>}
+      {state.error && <div>{state.error}</div>}
     </div>
   );
-}
-
-//   const [value, dispatch] = useReducer(valueReducer, {
-//     loading: true,
-//     value: null,
-//     error: null,
-//   });
-
-// `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=${currency}`
-//   let value = data.bitcoin;
-//   value = value[`${currency.toLowerCase()}`];
-
-// loading, error, value
-function valueReducer(valueState, action) {
-  switch (action.type) {
-    case "success":
-      return { loading: false, value: action.payload, error: "" };
-
-    case "error":
-      return { loading: false, value: null, error: action.payload };
-
-    default:
-      return { ...valueState, loading: false };
-  }
 }
