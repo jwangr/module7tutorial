@@ -1,14 +1,12 @@
 import "./App.css";
-import BitcoinComponent from "./components/BitcoinComponent";
-import EmojiProvider from "./contexts/EmojiProvider";
+import AppRoutes from "./routes/AppRoutes";
+import NavBar from "./components/NavBar";
 
 function App() {
   return (
     <>
-      <EmojiProvider>
-        <h1>Bitcoin Rates</h1>
-        <BitcoinComponent />
-      </EmojiProvider>
+      <NavBar />
+      <AppRoutes />
     </>
   );
 }
