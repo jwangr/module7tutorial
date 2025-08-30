@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useData } from "../hooks/useData";
+import Emoji from "./Emoji";
 
 export default function BitcoinComponent() {
   const currencies = ["USD", "AUD", "NZD", "GBP", "EUR", "SGD"];
@@ -44,6 +45,8 @@ export default function BitcoinComponent() {
         </select>
       </label>
       {state.error && <div>{state.error}</div>}
+
+      <Emoji />
     </div>
   );
 }
